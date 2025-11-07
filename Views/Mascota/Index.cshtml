@@ -1,0 +1,165 @@
+﻿@model ClinicaPetCare.Models.Mascota
+@{
+    // Obtener la lista de mascotas del ViewData (enviada desde el controlador)
+    var mascotas = ViewData["Mascotas"] as IEnumerable<ClinicaPetCare.Models.Mascota>;
+    ViewData["Title"] = "Registro de Mascotas | Clínica PetCare";
+}
+
+<div class="container my-5">
+    <div class="row">
+
+        <!-- Columna de Mensajes de Estado (Alertas) -->
+        <div class="col-12">
+            @if (TempData["MensajeExito"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["MensajeExito"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["MensajeError"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                    <i class="fas fa-times-circle me-2"></i> @TempData["MensajeError"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </div>
+
+        <!-- COLUMNA IZQUIERDA: FORMULARIO DE REGISTRO -->
+        <div class="col-lg-4 col-md-12 mb-4">
+            <div class="card shadow-lg border-primary">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="fas fa-paw me-2 fs-4"></i>
+                    <h5 class="mb-0">Registrar Nueva Mascota</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Mascota" asp-action="Registrar" method="post">
+
+                        <!-- Nombre de la Mascota -->
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label"></label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej: Max" />
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Especie (Select) -->
+                        <div class="mb-3">
+                            <label asp-for="Especie" class="form-label"></label>
+                            <select asp-for="Especie" class="form-select">
+                                <option value="">--- Seleccionar Especie ---</option>
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                                <option value="Ave">Ave</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                            <span asp-validation-for="Especie" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Raza -->
+                        <div class="mb-3">
+                            <label asp-for="Raza" class="form-label"></label>
+                            <input asp-for="Raza" class="form-control" placeholder="Ej: Labrador, Siames" />
+                            <span asp-validation-for="Raza" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Edad -->
+                        <div class="mb-3">
+                            <label asp-for="Edad" class="form-label"></label>
+                            <input asp-for="Edad" type="number" class="form-control" placeholder="Ej: 5" />
+                            <span asp-validation-for="Edad" class="text-danger small"></span>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Nombre del Dueño -->
+                        <div class="mb-3">
+                            <label asp-for="NombreDueno" class="form-label"></label>
+                            <input asp-for="NombreDueno" class="form-control" placeholder="Ej: Juan Pérez" />
+                            <span asp-validation-for="NombreDueno" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Teléfono del Dueño -->
+                        <div class="mb-3">
+                            <label asp-for="TelefonoDueno" class="form-label"></label>
+                            <input asp-for="TelefonoDueno" class="form-control" placeholder="Ej: 809-555-1234" />
+                            <span asp-validation-for="TelefonoDueno" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Fecha de Ingreso -->
+                        <div class="mb-3">
+                            <label asp-for="FechaIngreso" class="form-label"></label>
+                            <input asp-for="FechaIngreso" type="date" class="form-control" />
+                            <span asp-validation-for="FechaIngreso" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                                <i class="fas fa-save me-2"></i> Guardar Mascota
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: LISTADO DE MASCOTAS -->
+        <div class="col-lg-8 col-md-12">
+            <div class="card shadow-lg">
+                <div class="card-header bg-secondary text-white d-flex align-items-center">
+                    <i class="fas fa-list me-2 fs-4"></i>
+                    <h5 class="mb-0">Mascotas Registradas (@(mascotas?.Count() ?? 0))</h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (mascotas != null && mascotas.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Especie</th>
+                                        <th>Raza</th>
+                                        <th>Edad</th>
+                                        <th>Dueño</th>
+                                        <th>Teléfono</th>
+                                        <th>Ingreso</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var mascota in mascotas)
+                                    {
+                                        <tr>
+                                            <td>@mascota.Id</td>
+                                            <td>@mascota.Nombre</td>
+                                            <td><span class="badge bg-@(@mascota.Especie == "Perro" ? "info" : @mascota.Especie == "Gato" ? "warning" : "success")">@mascota.Especie</span></td>
+                                            <td>@(string.IsNullOrEmpty(mascota.Raza) ? "N/A" : mascota.Raza)</td>
+                                            <td>@mascota.Edad</td>
+                                            <td>@mascota.NombreDueno</td>
+                                            <td>@mascota.TelefonoDueno</td>
+                                            <td>@mascota.FechaIngreso.ToShortDateString()</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning m-3 text-center" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i> No hay mascotas registradas aún. ¡Usa el formulario!
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
