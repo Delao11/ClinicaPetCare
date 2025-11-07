@@ -1,6 +1,5 @@
 ﻿@model ClinicaPetCare.Models.Mascota
 @{
-    // Obtener la lista de mascotas del ViewData (enviada desde el controlador)
     var mascotas = ViewData["Mascotas"] as IEnumerable<ClinicaPetCare.Models.Mascota>;
     ViewData["Title"] = "Registro de Mascotas | Clínica PetCare";
 }
@@ -8,7 +7,7 @@
 <div class="container my-5">
     <div class="row">
 
-        <!-- Columna de Mensajes de Estado (Alertas) -->
+        <!-- Mensajes de éxito o error -->
         <div class="col-12">
             @if (TempData["MensajeExito"] != null)
             {
@@ -26,7 +25,7 @@
             }
         </div>
 
-        <!-- COLUMNA IZQUIERDA: FORMULARIO DE REGISTRO -->
+        <!-- FORMULARIO DE REGISTRO -->
         <div class="col-lg-4 col-md-12 mb-4">
             <div class="card shadow-lg border-primary">
                 <div class="card-header bg-primary text-white d-flex align-items-center">
@@ -36,18 +35,18 @@
                 <div class="card-body">
                     <form asp-controller="Mascota" asp-action="Registrar" method="post">
 
-                        <!-- Nombre de la Mascota -->
+                        <!-- Nombre -->
                         <div class="mb-3">
                             <label asp-for="Nombre" class="form-label"></label>
-                            <input asp-for="Nombre" class="form-control" placeholder="Ej: Max" />
+                            <input asp-for="Nombre" class="form-control" />
                             <span asp-validation-for="Nombre" class="text-danger small"></span>
                         </div>
 
-                        <!-- Especie (Select) -->
+                        <!-- Especie -->
                         <div class="mb-3">
                             <label asp-for="Especie" class="form-label"></label>
                             <select asp-for="Especie" class="form-select">
-                                <option value="">--- Seleccionar Especie ---</option>
+                                <option value="">Seleccionar especie</option>
                                 <option value="Perro">Perro</option>
                                 <option value="Gato">Gato</option>
                                 <option value="Ave">Ave</option>
@@ -59,14 +58,14 @@
                         <!-- Raza -->
                         <div class="mb-3">
                             <label asp-for="Raza" class="form-label"></label>
-                            <input asp-for="Raza" class="form-control" placeholder="Ej: Labrador, Siames" />
+                            <input asp-for="Raza" class="form-control" />
                             <span asp-validation-for="Raza" class="text-danger small"></span>
                         </div>
 
                         <!-- Edad -->
                         <div class="mb-3">
                             <label asp-for="Edad" class="form-label"></label>
-                            <input asp-for="Edad" type="number" class="form-control" placeholder="Ej: 5" />
+                            <input asp-for="Edad" type="number" class="form-control" min="0" />
                             <span asp-validation-for="Edad" class="text-danger small"></span>
                         </div>
 
@@ -75,24 +74,31 @@
                         <!-- Nombre del Dueño -->
                         <div class="mb-3">
                             <label asp-for="NombreDueno" class="form-label"></label>
-                            <input asp-for="NombreDueno" class="form-control" placeholder="Ej: Juan Pérez" />
+                            <input asp-for="NombreDueno" class="form-control" />
                             <span asp-validation-for="NombreDueno" class="text-danger small"></span>
                         </div>
 
-                        <!-- Teléfono del Dueño -->
+                        <!-- Teléfono -->
                         <div class="mb-3">
                             <label asp-for="TelefonoDueno" class="form-label"></label>
-                            <input asp-for="TelefonoDueno" class="form-control" placeholder="Ej: 809-555-1234" />
+                            <input asp-for="TelefonoDueno"
+                                   class="form-control"
+                                   type="tel"
+                                   pattern="[0-9]{8}"
+                                   maxlength="8"
+                                   placeholder="Ej: 88887777"
+                                   title="Ingrese un número de 8 dígitos sin guiones ni espacios" />
                             <span asp-validation-for="TelefonoDueno" class="text-danger small"></span>
                         </div>
 
                         <!-- Fecha de Ingreso -->
                         <div class="mb-3">
                             <label asp-for="FechaIngreso" class="form-label"></label>
-                            <input asp-for="FechaIngreso" type="date" class="form-control" />
+                            <input asp-for="FechaIngreso" type="date" class="form-control" min="2025-01-01" />
                             <span asp-validation-for="FechaIngreso" class="text-danger small"></span>
                         </div>
 
+                        <!-- Botón -->
                         <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-primary btn-lg shadow-sm">
                                 <i class="fas fa-save me-2"></i> Guardar Mascota
@@ -103,7 +109,7 @@
             </div>
         </div>
 
-        <!-- COLUMNA DERECHA: LISTADO DE MASCOTAS -->
+        <!-- LISTADO DE MASCOTAS -->
         <div class="col-lg-8 col-md-12">
             <div class="card shadow-lg">
                 <div class="card-header bg-secondary text-white d-flex align-items-center">
@@ -114,7 +120,7 @@
                     @if (mascotas != null && mascotas.Any())
                     {
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover mb-0">
+                            <table class="table table-striped table-hover mb-0 align-middle">
                                 <thead class="table-dark">
                                     <tr>
                                         <th>ID</th>
@@ -133,14 +139,21 @@
                                         <tr>
                                             <td>@mascota.Id</td>
                                             <td>@mascota.Nombre</td>
-                                            <td><span class="badge bg-@(@mascota.Especie == "Perro" ? "info" : @mascota.Especie == "Gato" ? "warning" : "success")">@mascota.Especie</span></td>
-                                            <td>@(string.IsNullOrEmpty(mascota.Raza) ? "N/A" : mascota.Raza)</td>
-                                            <td>@mascota.Edad</td>
-                                            <td>@mascota.NombreDueno</td>
-                                            <td>@mascota.TelefonoDueno</td>
-                                            <td>@mascota.FechaIngreso.ToShortDateString()</td>
-                                        </tr>
-                                    }
+                                            <td>
+                                                <span class="badge bg-@(
+                                                      mascota.Especie == "Perro" ? "info" :
+                                                      mascota.Especie == "Gato" ? "warning" :
+                                                      "success")">
+                                            @mascota.Especie
+                                        </span>
+                                    </td>
+                                    <td>@(string.IsNullOrEmpty(mascota.Raza) ? "N/A" : mascota.Raza)</td>
+                                    <td>@mascota.Edad</td>
+                                    <td>@mascota.NombreDueno</td>
+                                    <td>@mascota.TelefonoDueno</td>
+                                    <td>@mascota.FechaIngreso.ToShortDateString()</td>
+                                </tr>
+                                                                }
                                 </tbody>
                             </table>
                         </div>
@@ -148,7 +161,7 @@
                     else
                     {
                         <div class="alert alert-warning m-3 text-center" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i> No hay mascotas registradas aún. ¡Usa el formulario!
+                            <i class="fas fa-exclamation-triangle me-2"></i> No hay mascotas registradas aún.
                         </div>
                     }
                 </div>
@@ -158,8 +171,5 @@
 </div>
 
 @section Scripts {
-    @{
-        
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

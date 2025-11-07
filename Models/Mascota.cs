@@ -3,11 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicaPetCare.Models
 {
-    // añadir una validación personalizada
-    // que la fecha de ingreso no sea futura.
+    
     public class Mascota : IValidatableObject
     {
-        
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El nombre de la mascota es obligatorio.")]
@@ -17,7 +15,7 @@ namespace ClinicaPetCare.Models
 
         [Required(ErrorMessage = "Debe seleccionar una especie.")]
         [Display(Name = "Especie")]
-        public string Especie { get; set; } // Perro, Gato, Ave, reptill,otro
+        public string Especie { get; set; } // Perro, Gato, Ave, Reptil, Otro
 
         [StringLength(50, ErrorMessage = "La raza no debe exceder los 50 caracteres.")]
         public string Raza { get; set; }
@@ -32,8 +30,9 @@ namespace ClinicaPetCare.Models
         [Display(Name = "Nombre del Dueño")]
         public string NombreDueno { get; set; }
 
+       
         [Required(ErrorMessage = "El teléfono es obligatorio.")]
-        [RegularExpression(@"^\d{3}-\d{3}-\d{4}$", ErrorMessage = "Formato de teléfono inválido (ej. 809-555-1234).")]
+        [RegularExpression(@"^[0-9]{8}$", ErrorMessage = "El número de teléfono debe tener exactamente 8 dígitos sin guiones.")]
         [Display(Name = "Teléfono del Dueño")]
         public string TelefonoDueno { get; set; }
 
@@ -42,8 +41,7 @@ namespace ClinicaPetCare.Models
         [Display(Name = "Fecha de Ingreso")]
         public DateTime FechaIngreso { get; set; }
 
-
-        // Validación personalizada para asegurar que la fecha de ingreso no sea futura
+        // Validación para asegurar que la fecha de ingreso no sea futura
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (FechaIngreso > DateTime.Today)
